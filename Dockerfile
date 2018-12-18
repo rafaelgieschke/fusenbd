@@ -8,11 +8,13 @@ run cargo build --release
 run cargo build
 run rm src/*.rs
 copy . .
+run touch src/main.rs 
+run cargo build
 run cargo build --release
 
 from ubuntu
 run apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get -y install \
-  fuse \
+  fuse qemu-utils \
   && apt-get clean
 copy --from=0 \
   /src/target/release/fuseqemu \
