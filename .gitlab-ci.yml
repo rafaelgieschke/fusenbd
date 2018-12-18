@@ -1,0 +1,43 @@
+image: docker
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+services:
+- docker:dind
+
+build:
+  script:
+  - export CI_APPLICATION_REPOSITORY="$CI_REGISTRY_IMAGE"
+  - export CI_APPLICATION_TAG="git-$CI_COMMIT_SHA"
+  - docker build -t build .
+  - docker tag build "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+  - docker tag build "$CI_APPLICATION_REPOSITORY:$CI_COMMIT_REF_SLUG"
+  - docker tag build "$CI_APPLICATION_REPOSITORY:latest"
+
+  # If you want to push to Docker Hub, set
+  # CI_REGISTRY to "docker.io",
+  # CI_REGISTRY_IMAGE to "username/repository",
+  # CI_REGISTRY_USER, and CI_REGISTRY_PASSWORD
+  # via Settings > CI/CD > Variables.
+  #
+  # You can also set CI_DOCKERHUB_USER, CI_DOCKERHUB_PASSWORD
+  # as group variables and only set CI_REGISTRY_IMAGE to "username/repository"
+  # on the project.
+
+  - export CI_REGISTRY="$(echo "$CI_REGISTRY_IMAGE" | grep -oE '^[^/]+\.[^/]+')"
+  - ': "${CI_REGISTRY:=docker.io}"'
+  - if test "$CI_REGISTRY" = "docker.io" -a -n "$CI_DOCKERHUB_USER"; then
+    export CI_REGISTRY_USER="$CI_DOCKERHUB_USER" CI_REGISTRY_PASSWORD="$CI_DOCKERHUB_PASSWORD"; fi
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  - docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+  - docker push "$CI_APPLICATION_REPOSITORY:$CI_COMMIT_REF_SLUG"
+  - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "$CI_APPLICATION_REPOSITORY:latest"; fi
+
+  - docker volume rm busybox || true; docker run --rm -v busybox:/bin busybox
+  - rm -rf .* * || true
+  - docker run --rm -v busybox:/busybox -v "$(pwd)":/mnt --entrypoint /busybox/busybox build cp -R /opt/. /mnt
+
+  artifacts:
+    paths:
+    - "*"
