@@ -1,13 +1,13 @@
 [package]
-name = "fusenbd"
+name = "fuseqemu"
 version = "0.1.0"
-authors = ["Vitaly \"_Vi\" Shukela <vi0oss@gmail.com>"]
+authors = ["Vitaly \"_Vi\" Shukela <vi0oss@gmail.com>", "Rafael Gieschke <rafael@gieschke.de>"]
 description = "FUSE-based network block device client that exposes NBD export as a plain file"
 readme = "README.md"
 keywords = ["fuse", "nbd", "network-block-device"]
 categories = ["filesystem","network"]
 license = "MIT/Apache-2.0"
-repository = "https://github.com/vi/fusenbd"
+repository = "https://github.com/vi/fuseqemu"
 
 
 [dependencies]

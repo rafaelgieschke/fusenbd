@@ -31,9 +31,9 @@ use readwriteseekfs::{ReadSeekFs,ReadWriteSeekFs};
 #[structopt(
     after_help = "
 Example:
-    fusenbd nbd.dat image.qcow -f qcow2
+    fuseqemu nbd.dat image.qcow -f qcow2
     
-    fusenbd -r sda1 image.qcow -f qcow2 -- -o allow_empty,ro,fsname=qwerty,auto_unmount
+    fuseqemu -r sda1 image.qcow -f qcow2 -- -o allow_empty,ro,fsname=qwerty,auto_unmount
 ",
 )]
 struct Opt {
@@ -122,7 +122,7 @@ fn main() {
     let r = run();
 
     if let Err(e) = r {
-        eprintln!("fusenbd: {}", e);
+        eprintln!("fuseqemu: {}", e);
         ::std::process::exit(1);
     }
 }
