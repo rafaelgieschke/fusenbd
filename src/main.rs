@@ -50,6 +50,10 @@ struct Opt {
     #[structopt(short = "f", long = "format", default_value = "")]
     format: String,
 
+    /// Additional option passed to qemu-nbd
+    #[structopt(short = "o", long = "qemu-opt")]
+    qemuopts: Vec<String>,
+
     /// Mount read-only
     #[structopt(short = "r", long = "read-only")]
     ro: bool,
@@ -80,6 +84,9 @@ let res = {
     }
     if cmd.format != "" {
         qemunbd.arg("-f").arg(cmd.format);
+    }
+    for opt in cmd.qemuopts {
+        qemunbd.arg(opt);
     }
     qemunbd.arg(cmd.image);
 
