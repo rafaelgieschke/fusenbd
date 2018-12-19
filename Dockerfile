@@ -4,12 +4,12 @@ workdir /src
 env USER root
 run cargo init
 copy Cargo.toml Cargo.lock ./
+# run cargo build
 run cargo build --release
-run cargo build
 run rm src/*.rs
 copy . .
 run touch src/main.rs 
-run cargo build
+# run cargo build
 run cargo build --release
 
 from ubuntu
