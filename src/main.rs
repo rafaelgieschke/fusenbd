@@ -43,15 +43,15 @@ struct Opt {
     /// Path to image
     image: String,
     /// Named export to use.
-    #[structopt(short = "-x", long = "export-name", default_value = "")]
-    export: String,
+    #[structopt(short = "-x", long = "export-name")]
+    export: Option<String>,
 
     /// Image format (see qemu-nbd; e.g., raw, qcow2, ...)
     #[structopt(short = "f", long = "format", default_value = "")]
     format: String,
 
     /// Additional option passed to qemu-nbd
-    #[structopt(short = "o", long = "qemu-opt")]
+    #[structopt(value_terminator = ";", allow_hyphen_values = true, short = "o", long = "qemu-opt")]
     qemuopts: Vec<String>,
 
     /// Mount read-only
@@ -79,8 +79,8 @@ let res = {
     let socket_path = temp_path();
     let mut qemunbd = Command::new("qemu-nbd");
     qemunbd.arg("-k").arg(&socket_path);
-    if cmd.export != "" {
-        qemunbd.arg("-x").arg(&cmd.export);
+    if let Some(export) = &cmd.export {
+        qemunbd.arg("-x").arg(export);
     }
     if cmd.format != "" {
         qemunbd.arg("-f").arg(cmd.format);
@@ -108,7 +108,7 @@ let res = {
 
     let mut tcp = UnixStream::connect(&socket_path)?;
     let mut tcp = bufstream::BufStream::new(tcp);
-    let export = handshake(&mut tcp, cmd.export.as_bytes())?;
+    let export = handshake(&mut tcp, cmd.export.unwrap_or("".to_string()).as_bytes())?;
     let mut client = NbdClient::new(&mut tcp, &export);
 
     let opts: Vec<&OsStr> = cmd.opts.iter().map(AsRef::as_ref).collect();
