@@ -31,17 +31,17 @@ use readwriteseekfs::{ReadSeekFs,ReadWriteSeekFs};
 #[structopt(
     after_help = "
 Example:
-    fuseqemu nbd.dat image.qcow -f qcow2
+    fuseqemu image.qcow image.raw -f qcow2
     
-    fuseqemu -r sda1 image.qcow -f qcow2 -- -o allow_empty,ro,fsname=qwerty,auto_unmount
+    fuseqemu -r image.qcow image.raw -f qcow2 -- -o allow_empty,ro,fsname=qwerty,auto_unmount
 ",
 )]
 struct Opt {
+    /// Path to image
+    image: String,
     /// Regular file to use as mountpoint
     #[structopt(parse(from_os_str))]
     file: PathBuf,
-    /// Path to image
-    image: String,
     /// Named export to use.
     #[structopt(short = "-x", long = "export-name", default_value = "")]
     export: String,
