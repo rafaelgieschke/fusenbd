@@ -116,7 +116,12 @@ let res = {
     let export = handshake(&mut tcp, cmd.export.as_bytes())?;
     let mut client = NbdClient::new(&mut tcp, &export);
 
-    let opts: Vec<&OsStr> = cmd.opts.iter().map(AsRef::as_ref).collect();
+    let default_fuse_opts = vec!["-o", "auto_unmount"];
+    let mut opts: Vec<&OsStr> = cmd.opts.iter().map(AsRef::as_ref).collect();
+
+    if opts.len() == 0 {
+        opts = default_fuse_opts.iter().map(OsStr::new).collect();
+    }
     
     if cmd.ro {
         let fs = readwriteseekfs::ReadSeekFs::new(client, 1024)?;
