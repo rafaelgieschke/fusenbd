@@ -31,9 +31,9 @@ use readwriteseekfs::{ReadSeekFs,ReadWriteSeekFs};
 #[structopt(
     after_help = "
 Example:
-    fuseqemu nbd.dat image.qcow -f qcow2
+    fuseqemu image.qcow image.raw -f qcow2
     
-    fuseqemu -r sda1 image.qcow -f qcow2 -- -o allow_empty,ro,fsname=qwerty,auto_unmount
+    fuseqemu -r image.qcow image.raw -f qcow2 -- -o allow_empty,ro,fsname=qwerty,auto_unmount
 ",
 )]
 struct Opt {
@@ -53,13 +53,17 @@ struct Opt {
     /// Additional option passed to qemu-nbd
     #[structopt(short = "o", long = "qemu-opt")]
     qemuopts: Vec<String>,
+    
+    /// qemu-nbd cache mode
+    #[structopt(long = "cache", default_value = "unsafe")]
+    cache: String,
 
     /// Mount read-only
     #[structopt(short = "r", long = "read-only")]
     ro: bool,
 
     /// The rest of FUSE options.
-    #[structopt(parse(from_os_str))]
+    #[structopt(parse(from_os_str), default_value = "auto_unmount")]
     opts: Vec<OsString>,
 }
 
@@ -85,6 +89,7 @@ let res = {
     if cmd.format != "" {
         qemunbd.arg("-f").arg(cmd.format);
     }
+    qemunbd.arg("--cache").arg(&cmd.cache);
     for opt in cmd.qemuopts {
         qemunbd.arg(opt);
     }
