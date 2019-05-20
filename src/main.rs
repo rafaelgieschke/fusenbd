@@ -54,6 +54,10 @@ struct Opt {
     #[structopt(short = "o", long = "qemu-opt")]
     qemuopts: Vec<String>,
 
+    /// qemu-nbd cache mode
+    #[structopt(long = "cache", default_value = "unsafe")]
+    cache: String,
+
     /// Mount read-only
     #[structopt(short = "r", long = "read-only")]
     ro: bool,
@@ -85,6 +89,7 @@ let res = {
     if cmd.format != "" {
         qemunbd.arg("-f").arg(cmd.format);
     }
+    qemunbd.arg("--cache").arg(&cmd.cache);
     for opt in cmd.qemuopts {
         qemunbd.arg(opt);
     }
