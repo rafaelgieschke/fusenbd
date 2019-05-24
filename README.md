@@ -9,18 +9,19 @@ Example
 ---
 
 ```
-$ fuseqemu data image.qcow -r -- -o auto_unmount,default_permissions,allow_other,ro&
-[1] 14013
+qemu-img create -f qcow2 image.qcow
 
-$ mkdir -p m
+./fuseqemu image.qcow image.dd &
 
-$ ntfs-3g -o ro ./data m
+mkfs.ext4 image.dd
 
-$ ls m
-Boot  bootmgr  BOOTSECT.BAK  System Volume Information
+mkdir image.mnt
 
-$ fusermount -u m
+./lklfuse image.dd image.mnt -o type=ext4 &
 
-$ fusermount -u data
-[1]+  Done         fuseqemu 
+ls -la image.mnt
+
+fusermount -u image.mnt
+
+fusermount -u image.dd
 ```
