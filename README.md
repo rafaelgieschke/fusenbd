@@ -13,11 +13,13 @@ qemu-img create -f qcow2 image.qcow
 
 ./fuseqemu image.qcow image.dd &
 
+while ! test -s image.dd; do sleep 1; done
+
 mkfs.ext4 image.dd
 
 mkdir image.mnt
 
-./lklfuse image.dd image.mnt -o type=ext4 &
+./lklfuse image.dd image.mnt -o type=ext4
 
 ls -la image.mnt
 
