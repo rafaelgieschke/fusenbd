@@ -1,13 +1,13 @@
 [package]
 name = "fuseqemu"
 version = "0.1.0"
-authors = ["Vitaly \"_Vi\" Shukela <vi0oss@gmail.com>", "Rafael Gieschke <rafael@gieschke.de>"]
-description = "FUSE-based network block device client that exposes NBD export as a plain file"
+authors = ["Rafael Gieschke <rafael@gieschke.de>", "based on fusenbd (<https://github.com/vi/fusenbd>) by Vitaly \"_Vi\" Shukela <vi0oss@gmail.com> "]
+description = "FUSE-based client that exposes qcow/qcow2/... disk images as a plain file (via qemu-nbd)"
 readme = "README.md"
-keywords = ["fuse", "nbd", "network-block-device"]
+keywords = ["fuse", "nbd", "network-block-device", "qemu", "qemu-nbd", "qcow", "qcow2"]
 categories = ["filesystem","network"]
 license = "MIT/Apache-2.0"
-repository = "https://github.com/vi/fuseqemu"
+repository = "https://gitlab.com/rafaelgieschke/fuseqemu"
 
 
 [dependencies]

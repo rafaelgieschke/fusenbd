@@ -3,7 +3,11 @@ fuseqemu
 
 Fork of https://github.com/vi/fusenbd
 
-A FUSE mounter for QEMU block device.
+A FUSE mounter for QEMU block device images (qcow/qcow2/...).
+
+Dependencies:
+
+- `qemu-nbd` (`apt-get install -y qemu-utils`)
 
 Example
 ---
