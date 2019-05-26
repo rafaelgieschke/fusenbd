@@ -13,7 +13,7 @@ Example
 ---
 
 ```
-qemu-img create -f qcow2 image.qcow
+qemu-img create -f qcow2 image.qcow 1G
 
 ./fuseqemu image.qcow image.dd &
 
